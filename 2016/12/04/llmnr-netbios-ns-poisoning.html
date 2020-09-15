@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>LLMNR, NetBIOS-NS Poisoning | with knowledge comes power</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="LLMNR, NetBIOS-NS Poisoning" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Yerel ağda hedefin veya hedeflerin trafiğini ele geçirmek ve müdahale etmek için birden fazla yöntem bulunmaktadır. Bunların arasında ARP Poisoning en bilineni olup, en fazla istismar edilenidir. TCP/IP uzun yıldır var olan bir protokol ve ARP Poisoning, Rogue DHCP Server Attack vs. ise yine yıllardır yerel ağ trafiğine müdahale etmekte kullanılan saldırı yöntemlerinden bazılarıdır." />
+<meta property="og:description" content="Yerel ağda hedefin veya hedeflerin trafiğini ele geçirmek ve müdahale etmek için birden fazla yöntem bulunmaktadır. Bunların arasında ARP Poisoning en bilineni olup, en fazla istismar edilenidir. TCP/IP uzun yıldır var olan bir protokol ve ARP Poisoning, Rogue DHCP Server Attack vs. ise yine yıllardır yerel ağ trafiğine müdahale etmekte kullanılan saldırı yöntemlerinden bazılarıdır." />
+<link rel="canonical" href="/2016/12/04/llmnr-netbios-ns-poisoning.html" />
+<meta property="og:url" content="/2016/12/04/llmnr-netbios-ns-poisoning.html" />
+<meta property="og:site_name" content="with knowledge comes power" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-12-04T16:37:00+03:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"LLMNR, NetBIOS-NS Poisoning","dateModified":"2016-12-04T16:37:00+03:00","datePublished":"2016-12-04T16:37:00+03:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2016/12/04/llmnr-netbios-ns-poisoning.html"},"url":"/2016/12/04/llmnr-netbios-ns-poisoning.html","description":"Yerel ağda hedefin veya hedeflerin trafiğini ele geçirmek ve müdahale etmek için birden fazla yöntem bulunmaktadır. Bunların arasında ARP Poisoning en bilineni olup, en fazla istismar edilenidir. TCP/IP uzun yıldır var olan bir protokol ve ARP Poisoning, Rogue DHCP Server Attack vs. ise yine yıllardır yerel ağ trafiğine müdahale etmekte kullanılan saldırı yöntemlerinden bazılarıdır.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="with knowledge comes power" /></head><body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">with knowledge comes power</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">LLMNR, NetBIOS-NS Poisoning</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-12-04T16:37:00+03:00" itemprop="datePublished">Dec 4, 2016
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Yerel ağda hedefin veya hedeflerin trafiğini ele geçirmek ve müdahale etmek için birden fazla yöntem bulunmaktadır. Bunların arasında ARP Poisoning en bilineni olup, en fazla istismar edilenidir. TCP/IP uzun yıldır var olan bir protokol ve ARP Poisoning, Rogue DHCP Server Attack vs. ise yine yıllardır yerel ağ trafiğine müdahale etmekte kullanılan saldırı yöntemlerinden bazılarıdır.</p>
+
+<p>Gerçekleştirdiğim sızma testlerinde tecrübe ettiğim bir nokta var; yerel ağlarda bu saldırı yöntemleri her zaman işe yaramamaktadır, çünkü ARP Poisoning DHCP Starvation vb. saldırı tekniklerinin önlemleri büyük oranda Switch üzerinde kolaylıkla alınabilmektedir. Günümüzde bilinçlenmelinin artmasıyla “yıllardır” var olan TCP/IP protokolündeki, “yıllardır” istismar edilen/edilebilecek zafiyetler için ağ yöneticileri önlemlerini “almaktadır”.</p>
+
+<p>Bu noktada şöyle bir soru sorarsak sanırım, yazıyı daha da anlamlandırabiliriz ve tam anlamıyla giriş yapabiliriz; yerel ağ saldırıları (ARP Poisoning, DHCP Starvation, Rouge DHCP vs.) için tüm önlemlerin alındığı bir ağ içerisinde hedef veya hedeflerin ağ trafiğine nasıl müdahale ederiz veya hedefe nasıl arka kapı yerleştirebiliriz?</p>
+
+<p>Kurumsal ağlar içerisinde özellikle son kullanıcı tarafında Windows işletim sistemleri en çok kullanılan işletim sistemidir ve aşağıdaki grafikte örnek işletim sistemi kullanım dağılımı verilmiştir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/graph.png" alt="2010-2016 Arası Küresel İşletim Sistemi Dağılımı" />
+<em>2010-2016 Arası Küresel İşletim Sistemi Dağılımı<sup>1</sup></em></p>
+
+<h1 id="llmnr-nedir">LLMNR Nedir?</h1>
+
+<p>LLMNR (Link-Local Multicast Name Resolution), IPv4 veya IPv6 üzerinden sistemlerin yerel ağdaki diğer sistemlerin isimlerini çözmek kullandıkları, temelde DNS tabanlı bir protokoldür. DNS’e alternatif olarak geliştirilen bir protokol değildir ve DNS sorgularının olumsuz sonuçladığı durumlarda kullanılmaktadır. Windows Vista sonrası tüm Windows işletimleri sistemleri tarafından desteklemektedir. Aynı zamanda 2014 sonlarına doğru Linux üzerinde de gerekli entegrasyon gerçekleştirilmiştir.<sup>2</sup></p>
+
+<p>Herhangi bir yapılandırmaya ihtiyaç duymadan sistemler LLMNR’ı kullanabilmektedir ve temelde DNS sorgularının işe yaramadığı durumlarda devreye girmektedir. LLMNR protokolü IPv4 üzerinde 224.0.0.252, IPv6 üzerinde ise FF02:0:0:0:0:0:1:3 link-scope multicast adresleri kullanır ve TCP/UDP üzerinde 5355 portu üzerinde işlemlerini gerçekleşmektedir.</p>
+
+<p>Örnek olarak olmayan bir alan adına (dzlab.local) ping atmayı deneyelim. Başarısız sonuçlanan DNS sorgularının hemen ardından LLMNR sorguları oluşmaktadır. Aşağıda ilgili ekran görüntüsü verilmiştir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/llmnr.png" alt="LLMNR Sorguları" />
+<em>LLMNR Sorguları</em></p>
+
+<p>Özet olarak DNS üzerinden isim çözümlemenin mümkün olmadığı durumlarda işletim sistemi LLMNR protokolünü kullanıp ismi çözmeye çalışıyor.</p>
+
+<h1 id="netbios-nedir">NetBIOS Nedir?</h1>
+
+<p>NetBIOS (Network Basic Input/Output System), yerel ağ içerisinde sistemlerin birbirleri arasında iletişim için kullandıkları bir API’dır. Bilinenin aksine bir protokol değil protokol üzerinde çalışan bir API’dır. Üç farklı servisi vardır;</p>
+
+<ul>
+  <li>Name Service (NetBIOS-NS), isim kaydı ve isim çözme için kullanılır. UDP 137 portundan işlemler geçekleştirilir. Aynı zamanda TCP 137 portu da bazen kullanılır.</li>
+  <li>Datagram Distribution Service (NetBIOS-DGM), Connectionless iletişim için kullanılır. UDP 138 portunda işlemler geçekleştirilir.</li>
+  <li>Session Service (NetBIOS-SSN), Connection-Oriented iletişim için kullanılır. TCP 139 portu üzerinden işlemler geçekleştirilir.</li>
+</ul>
+
+<h1 id="windows-i̇şletim-sisteminde-i̇şler-nasıl-yürüyor">Windows İşletim Sisteminde İşler Nasıl Yürüyor?</h1>
+
+<p>Bir Windows işletim sistemi isim çözerken aşağıdaki adımları takip eder;</p>
+
+<ul>
+  <li>Sistemindeki hosts dosyasına bakar.</li>
+  <li>Yerel DNS Önbelleğine bakar.</li>
+  <li>DNS Sunucusuna sorgu gönderir.</li>
+  <li>LLMNR sorgusu gönderir.</li>
+  <li>NetBIOS-NS sorgusu gönderir.</li>
+</ul>
+
+<p>Yukarda, “dzlab.local” için ping atmaya çalışmıştık DNS sunucusu üzerinden kaydı olmayan bu domain için DNS sorgusu oluşmuştu ardından LLMNR isteği ve hemen sonrasında NetBIOS-NS isteği oluşmuştu. Aşağıda NetBIOS-NS isteğinin detaylarını içeren ekran görüntüsü verilmiştir, ilgili paketin DST kısmına bakılırsa bunun broadcast bir paket olduğu ve yerel ağdaki tüm sistemlere gönderildiği anlaşılabilir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/netbios-ns.png" alt="NetBIOS-NS Sorguları" />
+<em>NetBIOS-NS Sorguları</em></p>
+
+<p>Bu paket broadcast bir paket ise herhangi bir sistem bu pakete cevap verebilir diyebiliriz. Normal şartlar altında cevabı bilen sistem kaynak sisteme cevabı döner. Ancak kimse bilmiyorsa istek öylece yanıtsız kalır. Eğer sorulan alan adı gerçekten varsa doğru cevabı bilen sistemler arasından hangisinin cevabı öncelikle soran sisteme ulaşırsa o işlenir. Kısaca doğru cevaplar için bir “race condition” durumu söz konusudur.</p>
+
+<p>İşte tam bu noktada bu isteklere saldırgan olarak cevap verebilir ve hedef sistem ile ilgili hassas verilere erişebilir, başka bir yere yönlendirebilir hatta hedefe arka kapı bile yerleştirilebilir. Temelde yapılacak olan şey broadcast gelen paketleri dinlemek ve onlara gerektiği şekilde cevap vermektedir.</p>
+
+<p>Bu işlemler için Kali işletim sisteminde kurulu olarak gelen veya GitHub üzerinden erişlebilecek (https://github.com/SpiderLabs/Responder), açık kaynak kodlu Responder isimli araç yazı içerisinde kullanılmıştır.</p>
+
+<h1 id="hedefin-ntlmv2-hashini-ele-geçirme">Hedefin NTLMv2 Hash’ini Ele Geçirme</h1>
+
+<p>Araca herhangi bir parametre vermeden direkt olarak ağ arayüzünü tanımlayarak çalıştırdığımızda gelecek olan LLNMR ve NetBIOS-NS isteklerini dinlemeye başlayacaktır.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">responder <span class="nt">-I</span> eth0</code></pre></figure>
+
+<p>Örnek vererek ilerlersek;</p>
+
+<ul>
+  <li>Kullanıcı aslında \fileserver\’a erişmek istiyor ancak yanlış yazıp \filserver\ şeklinde yazarak erişmeye çalışıyor.</li>
+  <li>Bu durumda kaydı bulunmayan ilgili sistem için sorgular başlıyor. Saldırgan gelen LLMNR isteklerine cevap veriyor ve kendisinin \filserver\ olduğunu cevap olarak dönüyor.</li>
+</ul>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/filserver-req-res.png" alt="filserver İçin Oluşan Sorgu ve Cevabı" />
+<em>filserver İçin Oluşan Sorgu ve Cevabı</em></p>
+
+<ul>
+  <li>Kullanıcının işletim sistemi bağlantı kurup o an oturumu aktif olan kullanıcı adı ve NTLMv2 hash (parola özetini)’ini saldırgana veriyor.</li>
+</ul>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/smb.png" alt="Bağlantı Paketi" />
+<em>Bağlantı Paketi</em></p>
+
+<ul>
+  <li>Hedef bağlantı hatası ile karşılaşıyor.</li>
+</ul>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/hata.png" alt="Bağlantı Hatası" />
+<em>Bağlantı Hatası</em></p>
+
+<ul>
+  <li>Saldırgan hedefin NTLMv2 parola özetini ele geçiyor.</li>
+</ul>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/hash.png" alt="İsteğin Zehirlenmesi ve NTLMv2 Hash’in Elde Edilmesi" />
+<em>İsteğin Zehirlenmesi ve NTLMv2 Hash’in Elde Edilmesi</em></p>
+
+<p>Bu noktadan sonra saldırgan hedeften elde ettiği NTLMv2 hashi kırarak diğer saldırı aşamalarına geçilebilir. Çünkü NTLMv2 hash’i Pass The Hash vb. herhangi bir yöntem için kullanılamamaktadır.</p>
+
+<h1 id="hedeften-açık-hesap-bilgisi-elde-geçirme">Hedeften Açık Hesap Bilgisi Elde Geçirme</h1>
+
+<p>WPAD (Web Proxy Auto-Discovery Protocol), yerel ağ içerisinde veya internete erişim için proxy ayarının gerektiği durumlarda, proxy ayarlarının otomatik olarak istemcilere gönderilmesi ve işletilmesi için kullanılan teknolojidir. Proxy adres veya adresleri “wpad.dat” dosyası içerisine eklenir ve istemcilere DHCP veya DNS üzerinden almaları sağlanabilir. Örnek wpad.dat içeriği aşağıda verilmiştir.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">FindProxyForURL</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">host</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="dl">"</span><span class="s2">PROXY proxy.example.com:8080; DIRECT</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>WPAD aşağıdaki gibi çalışmaktadır;</p>
+
+<ul>
+  <li>DHCP ayarları yapıldıysa istemci DHCP üzerinden WPAD bilgisini alır. (Başarılı ise 4. adıma geçilir.)</li>
+  <li>DNS’e “wpad.[corpdomain.com]” sorulur. (Başarılı ise 4. adıma geçilir.)</li>
+  <li>WPAD için LLMNR sorgusu gönderilir. (Başarılı ise 4. adıma geçilir. Başarısız ise proxy kullanılmaz.)</li>
+  <li>“wpad.dat” dosyası indirilir ve içerisinde bulunan proxy ayarları sistemde kullanılmaya başlanır.</li>
+</ul>
+
+<p>Normal şartlarda birinci adımdaki istek üzerinden hedefe saldırı gerçekleştirilmek isteniyorsa DHCP Spoofing saldırısı deneneblilir ya da ikinci adımdaki istek üzerinden hedefe saldırı gerçekleştirilmek isteniyorsa DNS Poisoning saldırısı denenebillir. Ancak yukarıda da değinildiği üzere bu tür saldırılarına alınan önlemlere karşı neler yapabilir konusuna değindiğimiz için, amaç hedef üçüncü adıma geldiğinde neler yapılabilirdir.</p>
+
+<p>LLMNR üzerinden WPAD sorgusu gerçekleştiğinde ağ içerisindeki her istemciye bu istek gidecektir. Saldırgan bu noktada gelen WPAD isteğini zehirleyip (Sahte WPAD Sunucusu gibi hareket ederek) hedefe kendi oluşturduğu “wpad.dat” dosyasını vererek saldırıyı gerçekleştirebilir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/wpad.png" alt="İsteğin Zehirlenmesi ve Saldırganın Cevabı" />
+<em>İsteğin Zehirlenmesi ve Saldırganın Cevabı</em></p>
+
+<p>Bu saldırı türünde saldırganın avantajı olan bir durum söz konusu; Windows işletim sisteminin temel tarayıcısı Internet Explorer’ın proxy ayarları varsayılan olarak kurumla beraber “Automatically detect settings” şeklindedir. Aynı zamanda Mozilla Firefox tarayıcısının proxy ayarları varsayılan olarak kurulum ile beraber “Use system proxy settings” şeklinde olup Chrome tarayıcısı da Internet Explorer üzerinden yapılan proxy ayarlarını kullanmaktadır.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/browsers.png" alt="Internet Explorer ve Mozilla Firefox Proxy Ayarları" />
+<em>Internet Explorer ve Mozilla Firefox Proxy Ayarları</em></p>
+
+<p>Saldırı için kullanılacak araç olan Responder aşağıdaki parametreler için çalıştırıldığında kendisine gelen WPAD paketlerine cevap dönecektir ve döneceği cevap proxy için yetkilendirmenin (Basic Authentication) gerektiği anlamına gelecektir.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">responder <span class="nt">-I</span> eth0 <span class="nt">-wFb</span></code></pre></figure>
+
+<p>Kullanıcı tarafında kullanıcı adı ve parola girilmesi için bir ekran çıkacaktır. Bu aşamada kullanıcının gireceği değerleri açık (clear-text) olarak saldırgan ele geçecektir ve genelde saldırıya maruz kalan kullanıcılar Windows kullanıcı hesaplarının bilgilerini girmektedir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/basicauth.png" alt="Karşılaşılan Basic Authentication Penceresi" />
+<em>Karşılaşılan Basic Authentication Penceresi</em></p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/wpad-basic-auth.png" alt="WPAD.DAT Dosyasına Erişim İsteği ve Cevabı" />
+<em>WPAD.DAT Dosyasına Erişim İsteği ve Cevabı</em></p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/wpad-clear-text.png" alt="İsteğin Zehirlenmesi ve ClearText Hesap Bilgisinin Elde Edilmesi" />
+<em>İsteğin Zehirlenmesi ve ClearText Hesap Bilgisinin Elde Edilmesi</em></p>
+
+<h1 id="hedefe-arka-kapı-yerleştirme">Hedefe Arka Kapı Yerleştirme</h1>
+
+<p>Yukarıda WPAD isteklerine cevap dönerek hedeften açık (clear-text) olarak hesap bilgisinin nasıl alınabileceğine değinmiştim. Bu durumu bir adım öteye taşıyarak kullanıcının oluşturduğu isteği belirli bir sayfaya yönlendirerek kullanıcıya çalıştırılabilir dosya indirmesini sağlayabiliriz. Bu noktada oluşturulacak sayfanın inandırıcılığı için biraz sosyal mühendislik becerisi gerekmektedir ancak Responder aracının içerisindeki varsayılan sayfa bu işlem için gayet başarılıdır.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/page.png" alt="Varsayılan Phising Sayfası" />
+<em>Varsayılan Phising Sayfası</em></p>
+
+<p>Responder aracının <code class="language-plaintext highlighter-rouge">/etc/responder/Responder.conf</code> dosyası içerisinde aracın yapılandırma parametreleri bulunmaktadır. Dosya içerisinde <code class="language-plaintext highlighter-rouge">Serve-Html</code> ve <code class="language-plaintext highlighter-rouge">Serve-EXE</code> parametreleri varsayılan olarak <code class="language-plaintext highlighter-rouge">Off</code> değerindedir. Öncelikle bu değerleri <code class="language-plaintext highlighter-rouge">On</code> olarak değiştirmemiz gerekmektedir.</p>
+
+<figure class="highlight"><pre><code class="language-conf" data-lang="conf">[<span class="n">HTTP</span> <span class="n">Server</span>]
+
+; <span class="n">Set</span> <span class="n">to</span> <span class="n">On</span> <span class="n">to</span> <span class="n">always</span> <span class="n">serve</span> <span class="n">the</span> <span class="n">custom</span> <span class="n">EXE</span>
+<span class="n">Serve</span>-<span class="n">Always</span> = <span class="n">On</span>
+
+; <span class="n">Set</span> <span class="n">to</span> <span class="n">On</span> <span class="n">to</span> <span class="n">replace</span> <span class="n">any</span> <span class="n">requested</span> .<span class="n">exe</span> <span class="n">with</span> <span class="n">the</span> <span class="n">custom</span> <span class="n">EXE</span>
+<span class="n">Serve</span>-<span class="n">Exe</span> = <span class="n">On</span>
+
+; <span class="n">Set</span> <span class="n">to</span> <span class="n">On</span> <span class="n">to</span> <span class="n">serve</span> <span class="n">the</span> <span class="n">custom</span> <span class="n">HTML</span> <span class="n">if</span> <span class="n">the</span> <span class="n">URL</span> <span class="n">does</span> <span class="n">not</span> <span class="n">contain</span> .<span class="n">exe</span>
+; <span class="n">Set</span> <span class="n">to</span> <span class="n">Off</span> <span class="n">to</span> <span class="n">inject</span> <span class="n">the</span> <span class="s1">'HTMLToInject'</span> <span class="n">in</span> <span class="n">web</span> <span class="n">pages</span> <span class="n">instead</span>
+<span class="n">Serve</span>-<span class="n">Html</span> = <span class="n">On</span></code></pre></figure>
+
+<p>Ayarlar tamamlandıktan sonra Responder aracı aşağıdaki parametreler ile çalıştırıldığında gelen WPAD isteklerine cevap dönecektir ve cevapları işleyen istemciler saldırıya maruz kalacaklardır.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">responder <span class="nt">-I</span> eth0 <span class="nt">-wr</span></code></pre></figure>
+
+<p>Saldırıya maruz kalan kullanıcılar aşağıdaki ekran görüntüsünde olan sayfa ile karşılaşacaklardır.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/phising.png" alt="Karşılaşılan Sayfa ve Payload’ın İndirilmesi" />
+<em>Karşılaşılan Sayfa ve Payload’ın İndirilmesi</em></p>
+
+<p>Sayfada linki bulunan ProxyClient.exe dosyası hedef tarafından indirilip çalıştırıldığında TCP 140 portuna cmd.exe’yi bind edilecektir ve hedef üzerinde komut çalıştırılacak duruma geçilecektir.</p>
+
+<p>Hedef kullanıcılar tarayıcılarından nereye gitmek isterlerse karşılarına <code class="language-plaintext highlighter-rouge">/usr/share/responder/files/AccessDenied.html</code> dizin yolundaki dosya verilecektir ve ilgili HTML dosyası içerisinde erişim için <code class="language-plaintext highlighter-rouge">ProxyClient.exe</code> isimli dosyayı indirip çalıştırmaları istenmektedir. <code class="language-plaintext highlighter-rouge">ProxyClient.exe</code> dosyası <code class="language-plaintext highlighter-rouge">/usr/share/responder/files/BindShell.exe</code> dizini yolunda bulunmaktadır ve istenirse başka çalıştırılabilir dosyalarda oluşturulup ilgili dizine atıldıktan sonra yapılandırma dosyası güncellenirse Responder aracı hedefe ilgili dosyayı verecektir.</p>
+
+<p><img src="/assets/images/2016-12-04-llmnr-netbios-ns-poisoning/bind.png" alt="İsteğin Zehirlenmesi ve Bind Shell’e Erişimi" />
+<em>Karşılaşılan Sayfa ve Payload’ın İndirilmesi</em></p>
+
+<h2 id="referanslar">Referanslar</h2>
+<ol>
+  <li>http://gs.statcounter.com/</li>
+  <li>https://lwn.net/Articles/609740/</li>
+</ol>
+
+  </div><a class="u-url" href="/2016/12/04/llmnr-netbios-ns-poisoning.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">with knowledge comes power</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">with knowledge comes power</li><li><a class="u-email" href="mailto:artofpwn.com">artofpwn.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">hlldz</span></a></li><li><a href="https://www.linkedin.com/in/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hlldz</span></a></li><li><a href="https://www.twitter.com/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">hlldz</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Hi, this is Halil Dalabasmaz&#39;s personal blog. Feel free to leave feedback!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

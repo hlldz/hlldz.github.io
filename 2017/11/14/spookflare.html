@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>SpookFlare: Stay In Shadows | with knowledge comes power</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="SpookFlare: Stay In Shadows" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Windows is still the most popular end-user operating system and security products are mostly installed on Windows operating systems. Desktop operating system market share graph is given below from NetMarketShare report for August 2017. If an operating system has the highest usage rate in end user systems, it will be the target of attackers in the same way. This means security products will be used in that operating systems and that security products will have to develop themselves day by day against attacks." />
+<meta property="og:description" content="Windows is still the most popular end-user operating system and security products are mostly installed on Windows operating systems. Desktop operating system market share graph is given below from NetMarketShare report for August 2017. If an operating system has the highest usage rate in end user systems, it will be the target of attackers in the same way. This means security products will be used in that operating systems and that security products will have to develop themselves day by day against attacks." />
+<link rel="canonical" href="/2017/11/14/spookflare.html" />
+<meta property="og:url" content="/2017/11/14/spookflare.html" />
+<meta property="og:site_name" content="with knowledge comes power" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-11-14T16:37:00+03:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"SpookFlare: Stay In Shadows","dateModified":"2017-11-14T16:37:00+03:00","datePublished":"2017-11-14T16:37:00+03:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2017/11/14/spookflare.html"},"url":"/2017/11/14/spookflare.html","description":"Windows is still the most popular end-user operating system and security products are mostly installed on Windows operating systems. Desktop operating system market share graph is given below from NetMarketShare report for August 2017. If an operating system has the highest usage rate in end user systems, it will be the target of attackers in the same way. This means security products will be used in that operating systems and that security products will have to develop themselves day by day against attacks.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="with knowledge comes power" /></head><body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">with knowledge comes power</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">SpookFlare: Stay In Shadows</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-11-14T16:37:00+03:00" itemprop="datePublished">Nov 14, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Windows is still the most popular end-user operating system and security products are mostly installed on Windows operating systems. Desktop operating system market share graph is given below from NetMarketShare report for August 2017. If an operating system has the highest usage rate in end user systems, it will be the target of attackers in the same way. This means security products will be used in that operating systems and that security products will have to develop themselves day by day against attacks.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/stats.png" alt="Desktop/Laptop Operating System Browsing Statistics" title="Desktop/Laptop Operating System Browsing Statistics" class="center-image" /></p>
+
+<p>Since Windows is the most commonly used operating system, the target systems usually have Windows operating system in the penetration tests. If you intend to infiltrate the Windows operating system, Meterpreter is usually used as RAT in penetration tests because there is full integration with Metasploit. Also my favorite RAT is the Meterpreter. :) Although the Meterpreter has great features, it can be used for illegal purposes, not just for legal purposes, it means, Meterpreter can classified as malicious by security products. This leads to the necessity of bypassing the security products in the target system in penetration tests. OK, we know what we need; “We want to use the Meterpreter and bypass the security countermeasures taken at target”. So how the security products work and how will the SpookFlare help us?</p>
+
+<p>We can evaluate the operations of the security countermeasures implemented in the operating systems with three stages. The first is signature-based detection, the second is behavioral detection and the third is reputation-based detection. The first thing that is accepted in the literature to bypass the signature-based detection is obfuscation, so you can bypass countermeasures taken. The second, you must change the behavior of malware to bypass behavioral detection. So if you have been detected using Mimikatz to get the hashes of the local users in the target system, you can use the procdump tool of SysInternals. You can bypass behavioral detection because procdump is signed by the authority and generally it used for legal purposes. The last thing is reputation-based detectionand there are some things that are getting complicated at this point. Because the perspectives of security products may be different. Sometimes the properties of your application can be defined as malicious by some security products and the reputation-based detections algorithms changes completely from security product to security product. At this point, your experience is fully engaged in order to bypass the security product. At the end of the day, security products can detect and prevent the attack vectors if they “know”. I mean if you have unknown technique or way you can bypass the countermeasures of target system.</p>
+
+<p>There are multiple ways the bypass security products. SpookFlare has a different perspective to bypass security measures and it gives you the opportunity to bypass the endpoint countermeasures at the client-side detection and network-side detection. SpookFlare is a loader generator for Meterpreter Reverse HTTP and HTTPS stages. SpookFlare has custom encrypter with string obfuscation and run-time code compilation features so you can bypass the countermeasures of the target systems like a boss until they “learn” the technique and behavior of SpookFlare payloads.</p>
+
+<p>You can find the technical details of SpookFlare following headings and the payload execution steps following graph.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/execution-flow.png" alt="Execution Steps of SpookFlare Payload" title="Execution Steps of SpookFlare Payload" class="center-image" /></p>
+
+<h2 id="obfuscation">Obfuscation</h2>
+
+<p>In software development, obfuscation is the deliberate act of creating source or machine code that is difficult for humans to understand. SpookFlare uses the obfuscation for the string names. Therefore, it will be difficult to develop a signature in a certain “string(s)”. Actually writing a signature for certain string is a behavior done by many malware-analysts or security product developers. When a malware analyst analyzes the sample or by dynamic analysis systems then, once it is determined to be a malware, a proper signature of the file is extracted and added to the signatures database of the AV or Endpoint Security product. The signature of the file will change if you change any byte in a file. If you change the correct bytes, you can bypass the signature-based detections. SpookFlare uses the string obfuscation. Therefore, each generated payload will be unique as possible.</p>
+
+<h2 id="runtime-code-compiling">Runtime Code Compiling</h2>
+
+<p>Even though the application is built using obfuscation, the code must be completely changed after a point and this point is when your payloads are detected as malicious because string-based obfuscation can achieve success in a certain extent. For example, if the string-based obfuscation is used in your payload also the OpenProcess, VirtualAlloc etc. system calls are used in your payload, there is a possibility of your payload detect by security products. That system calls are suspicious because so many malware use that system calls. To escape from these and other situations, SpookFlare compiles the actual code during runtime. Thus, the definition of suspicious defines like system calls is hidden. Like the system calls, the actual code hiding is explained under the ongoing heading.</p>
+
+<p>The .NET Framework includes a mechanism called the Code Document Object Model (CodeDOM) that enables developers of programs that emit source code to generate source code in multiple programming languages at run time, based on a single model that represents the code to render. Sometimes developers need it, and .NET Framework makes it possible. For example, the following C # code compiles the C # code assigned to the “code” variable during execution and runs it.</p>
+
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.CSharp</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.CodeDom.Compiler</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Reflection</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">compileTest</span> <span class="p">{</span>
+    <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+        <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kt">string</span> <span class="n">code</span> <span class="p">=</span> <span class="s">@"
+    using System;
+
+    namespace runtimeCode {
+
+        public class compile {
+
+            public static void Main() {
+                Console.WriteLine(""Hello from runtime compiled code!"");
+                Console.ReadKey();
+            }
+
+        }
+
+    }"</span><span class="p">;</span>
+            <span class="n">CSharpCodeProvider</span> <span class="n">provider</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">CSharpCodeProvider</span><span class="p">();</span>
+            <span class="n">CompilerParameters</span> <span class="n">parameters</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">CompilerParameters</span><span class="p">();</span>
+            <span class="n">parameters</span><span class="p">.</span><span class="n">ReferencedAssemblies</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"System.dll"</span><span class="p">);</span>
+            <span class="n">parameters</span><span class="p">.</span><span class="n">GenerateInMemory</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+            <span class="n">parameters</span><span class="p">.</span><span class="n">GenerateExecutable</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+            <span class="n">CompilerResults</span> <span class="n">results</span> <span class="p">=</span> <span class="n">provider</span><span class="p">.</span><span class="nf">CompileAssemblyFromSource</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">code</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">results</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">HasErrors</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="p">();</span>
+
+                <span class="k">foreach</span> <span class="p">(</span><span class="n">CompilerError</span> <span class="n">error</span> <span class="k">in</span> <span class="n">results</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">sb</span><span class="p">.</span><span class="nf">AppendLine</span><span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="s">"Error ({0}): {1}"</span><span class="p">,</span> <span class="n">error</span><span class="p">.</span><span class="n">ErrorNumber</span><span class="p">,</span> <span class="n">error</span><span class="p">.</span><span class="n">ErrorText</span><span class="p">));</span>
+                <span class="p">}</span>
+
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">InvalidOperationException</span><span class="p">(</span><span class="n">sb</span><span class="p">.</span><span class="nf">ToString</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="n">Assembly</span> <span class="n">assembly</span> <span class="p">=</span> <span class="n">results</span><span class="p">.</span><span class="n">CompiledAssembly</span><span class="p">;</span>
+            <span class="n">Type</span> <span class="n">program</span> <span class="p">=</span> <span class="n">assembly</span><span class="p">.</span><span class="nf">GetType</span><span class="p">(</span><span class="s">"runtimeCode.compile"</span><span class="p">);</span>
+            <span class="n">MethodInfo</span> <span class="n">main</span> <span class="p">=</span> <span class="n">program</span><span class="p">.</span><span class="nf">GetMethod</span><span class="p">(</span><span class="s">"Main"</span><span class="p">);</span>
+            <span class="n">main</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>SpookFlare payloads are uses the runtime code compiling and execution. Each generated SpookFlare payloads contains own loader code and when executed, it give the loader code to the compiler.</p>
+
+<h2 id="source-code-encryption">Source Code Encryption</h2>
+
+<p>So far we have learned that we can use the string-based obfuscation and compile the code at runtime. However, when doing all of this we need to hide code the actual loader. Because the loader code being moved will have a disadvantage against signature-based fixes when the loader code defined clear-text. So SpookFlare encrypts the original loader’s code using the RijnDaelManaged class and when executed it decrypts the loader code after then it give the code to the compiler. It is act like crypters and finally, it execute the compiled code.</p>
+
+<h2 id="bypassing-network-level-countermeasures">Bypassing Network Level Countermeasures</h2>
+
+<p>I inspired this section from @Arno0x0x and wanted to improve it. We usually use Meterpreter Staged Payloads, as you know, these payloads download their cores (stage) over the network and run in the target system memory. Security countermeasures may not only be in the end-user system but also at the network level, remember the IDS/IPS etc. Although the security countermeasures in end-user systems are bypassed, security countermeasures at network level can jeopardize an entire operation.</p>
+
+<p>So, how can they detect the malicious files at the right network level? The answer is signature-based detection. For this situation you can use an encoder for Meterpreter’s core (stage) and you can bypass the network-level countermeasures. It can be the first conceivable idea and makes sense. If you use an encoder, you need to add a stub to decode it and creation of a signature for decoder is easier for malware analysts. We need something different and more difficult to analyze or detect. SpookFlare can handle this better without any encoder.</p>
+
+<p>How do malware analysts write signatures for a binary? By creating unique patterns and creating these patterns for the head of the file. I mean, malware analysts are creating signatures for the header part of the file. Thus, they can prevent false-positives and detect malicious files more easily. So here is the solution or SpookFlare offer; if we add random bytes at the beginning of the application we can bypass network-based countermeasures and for this solution we need to patch Metasploit.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/network-side-detection.png" alt="Detection Result of Network-Based Countermeasures for Meterpreter" title="Detection Result of Network-Based Countermeasures for Meterpreter" class="center-image" /></p>
+
+<p>The file <code class="language-plaintext highlighter-rouge">meterpreter_loader.rb</code> in Metasploit is responsible for creating the Stage. The <code class="language-plaintext highlighter-rouge">/usr/share/metasploit-framework/lib/msf/core/payload/windows/x64/meterpreter_loader.rb</code> file for x64 stages and <code class="language-plaintext highlighter-rouge">/usr/share/metasploit-framework/lib/msf/core/payload/windows/meterpreter_loader.rb</code> file for x86 stages. We will add random bytes to the beginning of the Stage and for this process and we can use securerandom library in the Ruby language. The screenshot of this process is given below.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/patch-one.png" alt="Patching Metasploit" title="Patching Metasploit" class="center-image" /></p>
+
+<p>After, we define the creation of the actual Stage with generated random bytes. The screenshot of this process is given below.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/patch-two.png" alt="Patching Metasploit" title="Patching Metasploit" class="center-image" /></p>
+
+<p>Finally we will tell the Loader to remove the bytes added from the beginning of Stage and run the rest. Array.Copy or Buffer.BlockCopy functions can be used in C# for this, but Array.Copy is used in the SpookFlare Loaders because Array.Copy is faster than the Buffer.BlockCopy.</p>
+
+<p>The scan results of SpookFlare loader, standard and patched Meterpreter stages are given below.</p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/spookflare-loader-result.png" alt="SpookFlare Loader Scan Result" title="SpookFlare Loader Scan Result" class="center-image" />
+<em>SpookFlare Loader Scan Result</em></p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/stadart-stage-result.png" alt="Standart Meterpreter Stage Scan Result" title="Standart Meterpreter Stage Scan Result" class="center-image" />
+<em>Standart Meterpreter Stage Scan Result</em></p>
+
+<p><img src="/assets/images/2017-11-14-spookflare/patched-stage-result.png" alt="Patched Meterpreter Stage Scan Result" title="Patched Meterpreter Stage San Result" class="center-image" />
+<em>Patched Meterpreter Stage Scan Result</em></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>As you know the security product firms can generate unique signatures of SpookFlare or behavioral algorithms when the usage rate of SpookFlare increases. When this happens, it will be time to change signatures and behavior. I/We will change signatures and behavior, or I/We will develop entirely new techniques. At the end of the day we will bypass the measures again in a very high probability because this is a cat mouse game that has no end. :) I developed the SpookFlare and technique for use in penetration tests, red team engagements and it is purely educational. Please use with responsibility.</p>
+
+<p>In the above sections, I tried to explain as much as possible how SpookFlare works. You can access the usage video and the project on Github below links.</p>
+
+<p>Usage Video, <a href="https://www.youtube.com/watch?v=p_eKKVoEl0o">https://www.youtube.com/watch?v=p_eKKVoEl0o</a><br />
+Project, <a href="https://github.com/hlldz/SpookFlare">https://github.com/hlldz/SpookFlare</a></p>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://en.wikipedia.org/wiki/Usage_share_of_operating_systems">Usage share of operating systems - Wikipedia</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/dynamic-source-code-generation-and-compilation">Dynamic Source Code Generation and Compilation</a></li>
+  <li><a href="https://www.codeproject.com/Tips/715891/Compiling-Csharp-Code-at-Runtime">Compiling C# Code at Runtime</a></li>
+  <li><a href="https://stackoverflow.com/questions/1389821/array-copy-vs-buffer-blockcopy">Array.Copy vs Buffer.BlockCopy</a></li>
+  <li><a href="https://www.codeproject.com/Articles/65183/Buffer-BlockCopy-not-as-fast-as-you-think">Buffer.BlockCopy Not As Fast As You Think</a></li>
+  <li><a href="https://arno0x0x.wordpress.com/2016/04/13/meterpreter-av-ids-evasion-powershell/">Meterpreter stage AV/IDS evasion with powershell</a></li>
+</ul>
+
+
+  </div><a class="u-url" href="/2017/11/14/spookflare.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">with knowledge comes power</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">with knowledge comes power</li><li><a class="u-email" href="mailto:artofpwn.com">artofpwn.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">hlldz</span></a></li><li><a href="https://www.linkedin.com/in/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hlldz</span></a></li><li><a href="https://www.twitter.com/hlldz"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">hlldz</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Hi, this is Halil Dalabasmaz&#39;s personal blog. Feel free to leave feedback!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
