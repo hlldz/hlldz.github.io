@@ -1,4 +1,212 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-09-15T17:04:42+03:00</updated><id>/feed.xml</id><title type="html">with knowledge comes power</title><subtitle>Hi, this is Halil Dalabasmaz's personal blog. Feel free to leave feedback!</subtitle><entry><title type="html">Odysseus’un Truva Atı</title><link href="/2020/09/14/odysseusun-truva-ati.html" rel="alternate" type="text/html" title="Odysseus’un Truva Atı" /><published>2020-09-14T16:37:00+03:00</published><updated>2020-09-14T16:37:00+03:00</updated><id>/2020/09/14/odysseusun-truva-ati</id><content type="html" xml:base="/2020/09/14/odysseusun-truva-ati.html">&lt;p&gt;Günümüzde, başta büyük şirketler olmak üzere birçok şirket hem online hem de offline sandbox çözümleri kullanmaktadır. Sandbox teknolojisi bir siber savunma merkezinin bel kemiğidir diyebiliriz. Çünkü sürekli olarak şirketinize zararlı dosyalar geliyor! “Gerçekten” yetişmiş birden fazla zararlı yazılım analisti bulmak zor ve bu işi yapacak doğru kişileri bulsanız bile bunu defalarca yapmaları gerekmektedir. Uzun lafı kısası bir sandbox çözümüne ihtiyacınız var ve hali hazırda bir sandbox teknolojisi kullanıyorsanız iyi şeyler yapıyorsunuz demektir.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-09-24T10:14:02+03:00</updated><id>/feed.xml</id><title type="html">with knowledge comes power</title><subtitle>Hi, this is Halil Dalabasmaz's personal blog. Feel free to leave feedback!</subtitle><entry><title type="html">Odysseus and the Trojan Horse</title><link href="/2020/09/23/odysseus-and-the-trojan-horse.html" rel="alternate" type="text/html" title="Odysseus and the Trojan Horse" /><published>2020-09-23T16:37:00+03:00</published><updated>2020-09-23T16:37:00+03:00</updated><id>/2020/09/23/odysseus-and-the-trojan-horse</id><content type="html" xml:base="/2020/09/23/odysseus-and-the-trojan-horse.html">&lt;p&gt;Today, many companies, especially large companies, use both online and offline sandbox solutions. We can say that sandbox technology is the backbone of a cyber defense center. Because malicious files are constantly coming to your company! It’s hard to find more than one “really” trained malware analyst, and even if you find the right people to do the job, they have to do it over and over again. Long story short, you need a sandbox solution and if you are already using sandbox technology, you are doing well.&lt;/p&gt;
+
+&lt;p&gt;In the current situation of sandbox technology, sandboxes that can analyze at the hypervisor level stand out. Such sandboxes are considered to be relatively difficult to bypass. These types of sandboxes can understand the standard anti-sanbox techniques and can take counter action. If you are using a sandbox technology and this sandbox technology can analyze at the hypervisor level, you are doing the good things in right way.&lt;/p&gt;
+
+&lt;p&gt;The way you prefer to bypass sanboxes that can perform advanced analysis and detections, such as sandboxes that analyze at the hypervisor level, is to develop malicious software that requires user interaction. For example, you can integrate the &lt;a href=&quot;https://github.com/hlldz/pickl3&quot;&gt;Pickl3&lt;/a&gt; project into your malware. When you complete the integration, Pickl3 will wait for the target user to enter the correct Windows account information. If the target user enters the correct account information, you will run your malware and “KA-BOOM!” You will probably bypass the sandbox. However, in this article, I will share a technique that I have applied and succeeded in many operations before. This technique has always reminded me of Odysseus and the Trojan Horse.&lt;/p&gt;
+
+&lt;h2 id=&quot;mistakes-made-and-their-results&quot;&gt;Mistakes Made and Their Results&lt;/h2&gt;
+
+&lt;p&gt;Even though the sandbox technology is advanced, companies do not tighten the operating system in the sandbox. Those who perform Red Team Operations or attackers primarily target end users. Now, let’s talk about what we can do with the system features of an average company’s end user. Below I talked about some mistakes and what we can do.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Mistake-1:&lt;/strong&gt; Almost every sandbox runs the malware on Administrator rights while analyzing. You can develop your malware to run according to the answer to the following question; Do you have administrator rights?&lt;/p&gt;
+
+&lt;p&gt;If it does not have Administrator rights, you can make it run and bypass the sandbox. For this, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetTokenInformation&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllocateAndInitializeSid&lt;/code&gt; APIs will give us the necessary information. I have given the sample C ++ code below.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;isAdministrator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;HANDLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;access_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;DWORD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;PSID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;admin_SID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;TOKEN_GROUPS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;SID_IDENTIFIER_AUTHORITY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NT_authority&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SECURITY_NT_AUTHORITY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;OpenProcessToken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetCurrentProcess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TOKEN_READ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;access_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;GetTokenInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;access_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;TokenGroups&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer_size&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;reinterpret_cast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TOKEN_GROUPS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;succeeded&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GetTokenInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;access_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;TokenGroups&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;buffer_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer_size&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;CloseHandle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;access_token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;succeeded&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AllocateAndInitializeSid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NT_authority&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;SECURITY_BUILTIN_DOMAIN_RID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;DOMAIN_ALIAS_RID_ADMINS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;admin_SID&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;found&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;found&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GroupCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;found&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EqualSid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;admin_SID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;group_token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Groups&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;FreeSid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;admin_SID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;found&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you want to take the above code further, you can also check the Integrity Level of your malicious process. ;)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Mistake-2:&lt;/strong&gt;  Birçok şirket Sandbox’ın analiz ortamı için Active Directory (Etki Alanı) kurmamaktadır. Ortalama her şirket etki alanına sahiptir ve son kullancılar bu etki alanına dahildir. Yani geliştirdiğiniz zararlı yazılım etki alanı entegrasyonu olan bir sisteme çalışacak demektir. Zararlı yazılımınızı şu sorunun cevabına göre çalışacak şekilde geliştirebilirsiniz; Çalıştığın ortam etki alanına entegre mi? Eğer sistem etki alanına entegre ise çalışmasını sağlayabilir ve sandbox’ı bypass edebilirsiniz. Bunun için &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DsRoleGetPrimaryDomainInformation&lt;/code&gt; API’ını kullanabilirsiniz. Bu API dahil olunmuş olan etki alanı hakkında bilgiler döndürür. Örnek C++ kodunu aşağıda verdim.&lt;/p&gt;
+
+&lt;p&gt;Many companies do not install Active Directory for Sandbox’s analysis environment. Every average company has a domain and end users are included in that domain. In other words, the malware you develop will run on a system with domain integration. You can develop your malware to run according to the answer to the following question; Is the environment in which you work integrated into the domain? If the system is integrated into the domain, you can make it work and bypass the sandbox. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DsRoleGetPrimaryDomainInformation&lt;/code&gt; API can use for this . This API returns information about the domain that has been integrated. I have given the sample C ++ code below.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;isMemberOfAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberOfAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+   &lt;span class=&quot;n&quot;&gt;DSROLE_PRIMARY_DOMAIN_INFO_BASIC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;DWORD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+   &lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DsRoleGetPrimaryDomainInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DsRolePrimaryDomainInfoBasic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PBYTE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  
+   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ERROR_SUCCESS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;n&quot;&gt;memberOfAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DomainForestName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DomainNameDns&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;n&quot;&gt;memberOfAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberOfAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Mistake-3:&lt;/strong&gt; We can take the technique I explained in the previous step to higher level. In the previous step, we made a query about the target system’s domain (Active Directroy) integration. We can also check for integration directly for a specific domain. For example, our target company is DZ Corp Inc. and they use a domain named dzcorp.local on their internal network. In the previous step, we ensured that our malware works on a system that belongs to the domain, now we will enable it to work only in the domain with the name dzcorp.local. For this, we need to find the DNS name for the target system’s domain. There are two traceable steps for this.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Finding disclosed SSL certificates&lt;/li&gt;
+  &lt;li&gt;Finding a directory that is accessible from the Internet and allows NTLM Autentication
+    &lt;ul&gt;
+      &lt;li&gt;Finding the Skype for Business (formerly Microsoft Lync or Microsoft Office Communicator) server&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;disclosed-ssl-certificates&quot;&gt;Disclosed SSL Certificates&lt;/h2&gt;
+&lt;p&gt;There are many systems on the internet that scan and record certificates. Companies can sometimes use their internal network certificates in their internet-enabled systems. The domain name of the certificate created for use in the internal network can usually be the DNS name of the internal domain. In such cases, you can find the DNS name of the domain used inside.&lt;/p&gt;
+
+&lt;h2 id=&quot;directories-that-allow-ntlm-authentication&quot;&gt;Directories That Allow NTLM Authentication&lt;/h2&gt;
+&lt;p&gt;Companies use a variety of technologies and some of them feature NTLM Authentication. Some of these are given below.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;OWA Servers&lt;/li&gt;
+  &lt;li&gt;Skype for Business (formerly Microsoft Lync or Microsoft Office Communicator)&lt;/li&gt;
+  &lt;li&gt;Autodiscover Servers (autodiscover.domain.com and lyncdiscover.domain.com)&lt;/li&gt;
+  &lt;li&gt;ADFS Servers&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For example, if the target company is using Skype for Business and this server is open to the Internet, you can find it with Subdomain Bruteforce. For example, once we find Subdomain for Skype for Business, we need to find a directory with NTLM Authentication by requesting one of the directories below. I have given the following possible directories.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;/abs/
+/adfs/services/trust/2005/windowstransport
+/aspnet_client/
+/autodiscover/
+/autoupdate/
+/certenroll/
+/certprov/
+/certsrv/
+/conf/
+/deviceupdatefiles_ext/
+/deviceupdatefiles_int/
+/dialin/
+/ecp/
+/etc/
+/ews/
+/exchange/
+/exchweb/
+/hybridconfig/
+/groupexpansion/
+/mcx/
+/mcx/mcxservice.svc
+/meet/
+/meeting/
+/microsoft-server-activesync/
+/oab/
+/ocsp/
+/owa/
+/persistentchat/
+/phoneconferencing/
+/powershell/
+/public/
+/reach/sip.svc
+/requesthandler/
+/requesthandlerext/
+/rgs/
+/rgsclients/
+/rpc/
+/rpcwithcert/
+/scheduler/
+/ucwa/
+/unifiedmessaging/
+/webticket/
+/webticket/webticketservice.svc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After finding a directory that requires NTLM Authentication, all that remains is to find the DNS name of the domain used in the internal network. When you make a request to one of the directories I gave above for Skype for Business, if NTLM Authentication is active, monitor its traffic using an HTTP (S) proxy. Try to login with any account information. The server will respond with an HTTP 401 (Unauthorized) status code and a value starting with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WWW-Authenticate&lt;/code&gt; header information &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TlRMTVNTUAACAAAA...&lt;/code&gt;. Here, in this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WWW-Authenticate&lt;/code&gt; header information, the domain DNS name used by the target company is mentioned. By reading this binary data, you will get a value as follows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-plain&quot; data-lang=&quot;plain&quot;&gt;Msg Type: 2 (Challenge)
+Target Name: u'HLLDZ' [123456233fsdfe0112900aaaa00] (05b @11)
+Challenge: 0xaaaaaaaaaaaaaaaa
+Context: '' [] (0b @0)
+Target: [block] (111b @11)
+    AD domain name (2): HLLDZ
+    Server name (1): SRV0001
+    DNS domain name (4): hlldz.dzcorp.local
+    FQDN (3): srv0001.hlldz.dzcorp.local
+    Parent DNS domain (5): dzcorp.local&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You now have information about the target company’s domain DNS name. You can develop your malware to work according to the answers to the following questions; Is the system you are running integrated into a domain? If so, is this domain named “dzcorp.local”?&lt;/p&gt;
+
+&lt;p&gt;To do this, you can compare the values of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dsRoleInfo-&amp;gt;DomainForestName&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dsRoleInfo-&amp;gt;DomainNameDns&lt;/code&gt; in the code below with the domain DNS name of the target company.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;isMemberOfTargetAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isMemberOfTargetAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+   &lt;span class=&quot;n&quot;&gt;DSROLE_PRIMARY_DOMAIN_INFO_BASIC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;DWORD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+   &lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DsRoleGetPrimaryDomainInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DsRolePrimaryDomainInfoBasic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PBYTE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  
+   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dwCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ERROR_SUCCESS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;n&quot;&gt;isMemberOfTargetAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DomainForestName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsRoleInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DomainNameDns&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compare dsRoleInfo-&amp;gt;DomainForestName or dsRoleInfo-&amp;gt;DomainNameDns with target information&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Then return TRUE or FALSE&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;isMemberOfTargetAD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isMemberOfTargetAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Happy hunting!&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/a/10553065&quot;&gt;How to check whether a Windows user has admin privileges in C?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/windows/win32/api/dsrole/nf-dsrole-dsrolegetprimarydomaininformation&quot;&gt;DsRoleGetPrimaryDomainInformation function&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Today, many companies, especially large companies, use both online and offline sandbox solutions. We can say that sandbox technology is the backbone of a cyber defense center. Because malicious files are constantly coming to your company! It’s hard to find more than one “really” trained malware analyst, and even if you find the right people to do the job, they have to do it over and over again. Long story short, you need a sandbox solution and if you are already using sandbox technology, you are doing well.</summary></entry><entry><title type="html">Odysseus’un Truva Atı</title><link href="/2020/09/14/odysseusun-truva-ati.html" rel="alternate" type="text/html" title="Odysseus’un Truva Atı" /><published>2020-09-14T16:37:00+03:00</published><updated>2020-09-14T16:37:00+03:00</updated><id>/2020/09/14/odysseusun-truva-ati</id><content type="html" xml:base="/2020/09/14/odysseusun-truva-ati.html">&lt;p&gt;Günümüzde, başta büyük şirketler olmak üzere birçok şirket hem online hem de offline sandbox çözümleri kullanmaktadır. Sandbox teknolojisi bir siber savunma merkezinin bel kemiğidir diyebiliriz. Çünkü sürekli olarak şirketinize zararlı dosyalar geliyor! “Gerçekten” yetişmiş birden fazla zararlı yazılım analisti bulmak zor ve bu işi yapacak doğru kişileri bulsanız bile bunu defalarca yapmaları gerekmektedir. Uzun lafı kısası bir sandbox çözümüne ihtiyacınız var ve hali hazırda bir sandbox teknolojisi kullanıyorsanız iyi şeyler yapıyorsunuz demektir.&lt;/p&gt;
 
 &lt;p&gt;Sandbox teknolojisinin günümüzdeki durumunda, özellikle hypervisor seviyesinde analiz yapabilenler sandboxlar öne çıkmaktadır. Bu tür sandboxların bypass edilmesi görece olarak daha zor kabul edilmektedir. Bu tür sandboxlar standart haline gelmiş anti-sanbox tekniklerini anlayabilmektedir ve karşı aksiyon alabilmektedir. Eğer bir sandbox teknolojisi kullanıyorsanız ve bu sandbox teknolojisi hypervisor seviyesinde analiz yapabiliyorsa iyi şeyleri doğru şekilde yapıyorsunuz demektir.&lt;/p&gt;
 
@@ -109,7 +317,7 @@
 &lt;ul&gt;
   &lt;li&gt;OWA Servers&lt;/li&gt;
   &lt;li&gt;Skype for Business (eski adıyla Microsoft Lync veya Microsoft Office Communicator)&lt;/li&gt;
-  &lt;li&gt;Autodiscover Servers (autodiscover.domain.com and lyncdiscover.domain.com)&lt;/li&gt;
+  &lt;li&gt;Autodiscover Servers (autodiscover.domain.com ve lyncdiscover.domain.com)&lt;/li&gt;
   &lt;li&gt;ADFS Servers&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -172,7 +380,7 @@ Target: [block] (111b @11)
     FQDN (3): srv0001.hlldz.dzcorp.local
     Parent DNS domain (5): dzcorp.local&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Artık hedef şirketin etki alanı DNS ismi hakkında gerekli bilgiye sahipsiniz. Zararlı yazılımınızı şu soruların cevabına göre çalışacak şekilde geliştirebilirsiniz; Çalıştığın ortam etki alanı entegre mi? Eğer öyle ise, bu etki alanı dzcorp.local isimine mi sahip?&lt;/p&gt;
+&lt;p&gt;Artık hedef şirketin etki alanı DNS ismi hakkında gerekli bilgiye sahipsiniz. Zararlı yazılımınızı şu soruların cevabına göre çalışacak şekilde geliştirebilirsiniz; Çalıştığın ortam etki alanına entegre mi? Eğer öyle ise, bu etki alanı dzcorp.local isimine mi sahip?&lt;/p&gt;
 
 &lt;p&gt;Bunun için aşağıdaki kodda bulunan &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dsRoleInfo-&amp;gt;DomainForestName&lt;/code&gt; ya da &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dsRoleInfo-&amp;gt;DomainNameDns&lt;/code&gt; ile hedef şirketin etki alanı DNS adını karşılaştırabilirsiniz.&lt;/p&gt;
 
